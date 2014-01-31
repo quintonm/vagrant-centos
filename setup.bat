@@ -5,7 +5,7 @@ call vars.bat
 "%VBOX%\VBoxManage" modifyvm %NAME% ^
     --vram 12 ^
     --accelerate3d off ^
-    --memory 613 ^
+    --memory %MEMORY% ^
     --usb off ^
     --audio none ^
     --boot1 disk --boot2 dvd --boot3 none --boot4 none ^
@@ -22,12 +22,8 @@ call vars.bat
     --bioslogodisplaytime 0 ^
     --biosbootmenu disabled
 
-:: dynamically sized drive with max size of 30g
-"%VBOX%\VBoxManage" createhd --filename "%HDD%" --size 30720
-
-:: Swap is recommended to be double the size of RAM.
-:: dynamically sized drive with max size of 4g
-"%VBOX%\VBoxManage" createhd --filename "%HDD_SWAP%" --size 4096
+"%VBOX%\VBoxManage" createhd --filename "%HDD%" --size %HDD_SIZE%
+"%VBOX%\VBoxManage" createhd --filename "%HDD_SWAP%" --size %HDD_SWAP_SIZE%
 
 "%VBOX%\VBoxManage" storagectl %NAME% ^
     --name SATA --add sata --portcount 2 --bootable on
@@ -42,6 +38,8 @@ call vars.bat
     --storagectl SATA --port 3 --type dvddrive --medium "%GUESTADDITIONS%"
 
 "%VBOX%\VBoxManage" startvm %NAME% --type gui
+
+mkdir boxes
 
 echo 'At the boot prompt, hit <TAB> and then type:'
 :: echo " ks=http://${IP}.3:8081"
